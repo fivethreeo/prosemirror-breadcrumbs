@@ -94,7 +94,7 @@ class BreadcrumbDOMView {
 
         try {
           const selection = NodeSelection.create(doc, step.pos);
-          view.dispatch(tr.setSelection(selection));
+          view.dispatch(tr.setSelection(selection).scrollIntoView());
           view.focus();
         } catch (error) {
           console.error(`Could not set NodeSelection on node: ${step.name}`, error);
