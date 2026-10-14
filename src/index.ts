@@ -36,7 +36,7 @@ class BreadcrumbDOMView {
     if (!parent) return;
 
     let menuWrapper =
-      parent.closest(".prosemirror-menu-wrapper") ||
+      parent.closest(".ProseMirror-menubar-wrapper") ||
       parent.querySelector(".ProseMirror-menubar-wrapper");
 
     if (!menuWrapper) {
