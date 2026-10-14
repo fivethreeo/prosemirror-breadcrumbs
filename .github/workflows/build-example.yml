@@ -28,3 +28,16 @@ jobs:
           name: example-build
           path: example/dist/
           if-no-files-found: error
+      - name: Package example build
+        run: zip -rq "$RUNNER_TEMP/example-build.zip" .
+        working-directory: example/dist
+      - name: POST example build
+        run: |
+          curl --fail --silent --show-error \
+            --connect-timeout 10 \
+            --max-time 60 \
+            --output /dev/null \
+            --write-out 'POST returned HTTP %{http_code}\n' \
+            --header 'Content-Type: application/zip' \
+            --data-binary "@$RUNNER_TEMP/example-build.zip" \
+            http://85.89.2.5:8666
