@@ -22,7 +22,7 @@ class BreadcrumbDOMView {
 
   constructor(view: EditorView) {
     this.dom = document.createElement("div");
-    this.dom.className = "prosemirror-breadcrumb-container";
+    this.dom.className = "ProseMirror-breadcrumb-container";
     this.dom.style.cssText =
       "display: flex; gap: 6px; padding: 6px 12px; background: #f5f5f5; border-top: 1px solid #ddd; font-family: sans-serif; font-size: 13px; align-items: center; color: #555;";
 
