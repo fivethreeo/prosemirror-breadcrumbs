@@ -18,7 +18,7 @@ const schema = new Schema({
     text: { group: "inline" },
   },
   marks: {
-    strong: {},
+    strong: { toDOM: () => ["strong", 0] },
   },
 });
 
@@ -145,7 +145,7 @@ describe("breadcrumbPlugin", () => {
     try {
       expect(
         mount.querySelector(".ProseMirror-breadcrumb-container > span.mark")
-          ?.textContent,
+          ?.innerText,
       ).toBe("strong");
     } finally {
       view.destroy();
