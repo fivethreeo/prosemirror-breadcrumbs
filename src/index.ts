@@ -23,9 +23,6 @@ class BreadcrumbDOMView {
   constructor(view: EditorView) {
     this.dom = document.createElement("div");
     this.dom.className = "ProseMirror-breadcrumb-container";
-    this.dom.style.cssText =
-      "display: flex; gap: 6px; padding: 6px 12px; background: #f5f5f5; border-top: 1px solid #ddd; font-family: sans-serif; font-size: 13px; align-items: center; color: #555;";
-
     this.mount(view);
     this.update(view, view.state);
   }
@@ -57,19 +54,16 @@ class BreadcrumbDOMView {
       if (index > 0) {
         const separator = document.createElement("span");
         separator.innerText = "›";
-        separator.style.color = "#aaa";
         this.dom.appendChild(separator);
       }
 
       const crumb = document.createElement("span");
       crumb.innerText = step.name;
-      crumb.style.cssText =
-        "cursor: pointer; padding: 2px 4px; border-radius: 3px; transition: background 0.2s;";
       crumb.onmouseover = () => {
-        crumb.style.background = "#e0e0e0";
+        crumb.classList.add("active");
       };
       crumb.onmouseout = () => {
-        crumb.style.background = "transparent";
+        crumb.classList.remove("active");
       };
       crumb.onclick = () => {
         const { tr, doc } = view.state;
