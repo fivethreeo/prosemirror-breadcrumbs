@@ -25,6 +25,10 @@ const state = EditorState.create({
 
 The plugin renders a breadcrumb for the document and each ancestor shared by the selection's endpoints. Clicking a node breadcrumb selects that node with a ProseMirror `NodeSelection`; the document-root breadcrumb is not selectable. If the selection is already a `NodeSelection`, the selected node is also represented in the path.
 
+## Options
+
+Pass `{ showMarks: true }` to `breadcrumbPlugin` to show active marks as breadcrumbs. Mark breadcrumbs are disabled by default.
+
 ## Read the breadcrumb path
 
 The current path is available from the plugin state:
@@ -54,5 +58,3 @@ From the repository root:
 - `npm test` runs the plugin tests.
 - `npm run typecheck` checks source and test TypeScript.
 - `npm run build` builds the package into `dist/`.
-
-Pass `{ showMarks: true }` to `breadcrumbPlugin` to show active marks as breadcrumbs.
