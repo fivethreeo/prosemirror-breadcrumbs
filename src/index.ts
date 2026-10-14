@@ -15,12 +15,18 @@ export interface BreadcrumbPluginState {
   path: BreadcrumbNode[];
 }
 
+export interface BreadcrumbPluginOptions {
+  showMarks?: boolean;
+}
+
 export const breadcrumbPluginKey = new PluginKey<BreadcrumbPluginState>("breadcrumbPlugin");
 
 class BreadcrumbDOMView {
   dom: HTMLDivElement;
+  private showMarks: boolean;
 
-  constructor(view: EditorView) {
+  constructor(view: EditorView, showMarks: boolean) {
+    this.showMarks = showMarks;
     this.dom = document.createElement("div");
     this.dom.className = "ProseMirror-breadcrumb-container";
     this.mount(view);
@@ -91,6 +97,22 @@ class BreadcrumbDOMView {
 
       this.dom.appendChild(crumb);
     });
+
+    if (this.showMarks) {
+      const marks =
+        view.state.storedMarks || view.state.selection.$from.marks();
+      marks.forEach((mark) => {
+        const separator = document.createElement("span");
+        separator.className = "separator";
+        separator.innerText = "›";
+        this.dom.appendChild(separator);
+
+        const markCrumb = document.createElement("span");
+        markCrumb.className = "mark";
+        markCrumb.innerText = mark.type.name;
+        this.dom.appendChild(markCrumb);
+      });
+    }
   }
 
   destroy() {
@@ -98,7 +120,7 @@ class BreadcrumbDOMView {
   }
 }
 
-export function breadcrumbPlugin() {
+export function breadcrumbPlugin(options: BreadcrumbPluginOptions = {}) {
   return new Plugin<BreadcrumbPluginState>({
     key: breadcrumbPluginKey,
     state: {
@@ -113,7 +135,7 @@ export function breadcrumbPlugin() {
       },
     },
     view(editorView) {
-      return new BreadcrumbDOMView(editorView);
+      return new BreadcrumbDOMView(editorView, options.showMarks ?? false);
     },
   });
 }

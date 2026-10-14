@@ -17,6 +17,9 @@ const schema = new Schema({
     },
     text: { group: "inline" },
   },
+  marks: {
+    strong: {},
+  },
 });
 
 function nestedDocument() {
@@ -119,6 +122,55 @@ describe("breadcrumbPlugin", () => {
       expect(view.state.selection).toBeInstanceOf(NodeSelection);
       expect(view.state.selection.from).toBe(0);
       expect(view.state.selection.to).toBe(10);
+    } finally {
+      view.destroy();
+      mount.remove();
+    }
+  });
+
+  it("shows active marks when the option is enabled", () => {
+    const markedText = schema.text("nested", [schema.mark("strong")]);
+    const doc = schema.node("doc", null, [
+      schema.node("paragraph", null, [markedText]),
+    ]);
+    const state = EditorState.create({
+      doc,
+      selection: TextSelection.create(doc, 4),
+      plugins: [breadcrumbPlugin({ showMarks: true })],
+    });
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const view = new EditorView(mount, { state });
+
+    try {
+      expect(
+        mount.querySelector(".ProseMirror-breadcrumb-container > span.mark")
+          ?.textContent,
+      ).toBe("strong");
+    } finally {
+      view.destroy();
+      mount.remove();
+    }
+  });
+
+  it("does not show active marks by default", () => {
+    const markedText = schema.text("nested", [schema.mark("strong")]);
+    const doc = schema.node("doc", null, [
+      schema.node("paragraph", null, [markedText]),
+    ]);
+    const state = EditorState.create({
+      doc,
+      selection: TextSelection.create(doc, 4),
+      plugins: [breadcrumbPlugin()],
+    });
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const view = new EditorView(mount, { state });
+
+    try {
+      expect(
+        mount.querySelector(".ProseMirror-breadcrumb-container > span.mark"),
+      ).toBeNull();
     } finally {
       view.destroy();
       mount.remove();

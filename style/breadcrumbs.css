@@ -21,3 +21,14 @@
   background-color: #dbeafe;
   font-weight: bold;
 }
+
+.ProseMirror-breadcrumb-container > span.separator,
+.ProseMirror-breadcrumb-container > span.mark {
+  cursor: default;
+}
+
+.ProseMirror-breadcrumb-container > span.mark {
+  background-color: #f3f4f6;
+  border-radius: 3px;
+  padding: 1px 4px;
+}
