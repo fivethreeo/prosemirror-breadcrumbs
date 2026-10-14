@@ -1,0 +1,24 @@
+{
+  "name": "prosemirror-breadcrumbs-example",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "rsbuild dev --open",
+    "build": "rsbuild build",
+    "preview": "rsbuild preview"
+  },
+  "dependencies": {
+    "prosemirror-example-setup": "^1.2.3",
+    "prosemirror-menu": "^1.2.5",
+    "prosemirror-model": "^1.25.12",
+    "prosemirror-schema-basic": "^1.2.4",
+    "prosemirror-schema-list": "^1.5.1",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-view": "^1.42.6"
+  },
+  "devDependencies": {
+    "@rsbuild/core": "^1.5.0",
+    "typescript": "^5.9.0"
+  }
+}
