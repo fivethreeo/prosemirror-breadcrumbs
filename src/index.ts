@@ -37,11 +37,11 @@ class BreadcrumbDOMView {
 
     let menuWrapper =
       parent.closest(".prosemirror-menu-wrapper") ||
-      parent.querySelector(".prosemirror-menu-wrapper");
+      parent.querySelector(".ProseMirror-menubar-wrapper");
 
     if (!menuWrapper) {
       menuWrapper = document.createElement("div");
-      menuWrapper.className = "prosemirror-menu-wrapper";
+      menuWrapper.className = "ProseMirror-menubar-wrapper";
       parent.insertBefore(menuWrapper, editorDOM);
       menuWrapper.appendChild(editorDOM);
     }
