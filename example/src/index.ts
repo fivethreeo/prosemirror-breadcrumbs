@@ -10,6 +10,7 @@ import {Schema} from "prosemirror-model"
 import {buildMenuItems} from "./menu"
 import {buildKeymap} from "./keymap"
 import {buildInputRules} from "./inputrules"
+import {breadcrumbPlugin} from "../../src/index.js"
 
 export {buildMenuItems, buildKeymap, buildInputRules}
 
@@ -35,6 +36,8 @@ export {buildMenuItems, buildKeymap, buildInputRules}
 ///  * A custom plugin that adds a `menuContent` prop for the
 ///    prosemirror-menu wrapper, and a CSS class that enables the
 ///    additional styling defined in `style/style.css` in this package
+///
+///  * The breadcrumb navigation plugin from this repository
 ///
 /// Probably only useful for quickly setting up a passable
 /// editor—you'll need more control over your settings in most
@@ -63,7 +66,8 @@ export function exampleSetup(options: {
     keymap(buildKeymap(options.schema, options.mapKeys)),
     keymap(baseKeymap),
     dropCursor(),
-    gapCursor()
+    gapCursor(),
+    breadcrumbPlugin()
   ]
   if (options.menuBar !== false)
     plugins.push(menuBar({floating: options.floatingMenu !== false,
