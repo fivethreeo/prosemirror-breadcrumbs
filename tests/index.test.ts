@@ -91,9 +91,6 @@ describe("breadcrumbPlugin", () => {
       const selectedCrumb = mount.querySelector(".selected");
       expect((selectedCrumb as HTMLElement | null)?.innerText).toBe("blockquote");
       expect(selectedCrumb?.getAttribute("aria-current")).toBe("location");
-      expect((selectedCrumb as HTMLElement).style.backgroundColor).toBe(
-        "rgb(219, 234, 254)",
-      );
     } finally {
       view.destroy();
       mount.remove();

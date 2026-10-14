@@ -66,8 +66,6 @@ class BreadcrumbDOMView {
       crumb.classList.toggle("selected", isSelected);
       if (isSelected) {
         crumb.setAttribute("aria-current", "location");
-        crumb.style.backgroundColor = "#dbeafe";
-        crumb.style.fontWeight = "bold";
       }
       crumb.onmouseover = () => {
         crumb.classList.add("active");
