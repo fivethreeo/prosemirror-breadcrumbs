@@ -89,7 +89,7 @@ describe("breadcrumbPlugin", () => {
       expect(path?.[1].pos).toBe(0);
 
       const selectedCrumb = mount.querySelector(".selected");
-      expect(selectedCrumb?.textContent).toBe("blockquote");
+      expect((selectedCrumb as HTMLElement | null)?.innerText).toBe("blockquote");
       expect(selectedCrumb?.getAttribute("aria-current")).toBe("location");
       expect((selectedCrumb as HTMLElement).style.backgroundColor).toBe(
         "rgb(219, 234, 254)",
@@ -112,9 +112,7 @@ describe("breadcrumbPlugin", () => {
     const view = new EditorView(mount, { state });
 
     try {
-      const crumbs = view.dom.parentElement?.querySelector(
-        ".prosemirror-breadcrumb-container",
-      );
+      const crumbs = mount.querySelector(".ProseMirror-breadcrumb-container");
       const blockquoteCrumb = crumbs?.children[2] as HTMLElement | undefined;
 
       expect(blockquoteCrumb).toBeDefined();

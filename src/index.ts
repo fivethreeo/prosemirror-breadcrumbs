@@ -61,6 +61,7 @@ class BreadcrumbDOMView {
       crumb.innerText = step.name;
       const isSelected =
         view.state.selection instanceof NodeSelection &&
+        view.state.selection.node === step.node &&
         view.state.selection.from === step.pos;
       crumb.classList.toggle("selected", isSelected);
       if (isSelected) {
