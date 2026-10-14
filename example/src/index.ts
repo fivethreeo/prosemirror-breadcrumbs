@@ -4,6 +4,7 @@ import { EditorView } from "prosemirror-view";
 import "prosemirror-view/style/prosemirror.css";
 import "prosemirror-menu/style/menu.css";
 import "prosemirror-example-setup/style/style.css";
+import "../../style/breadcrumbs.css";
 import { exampleSchema, exampleSrt } from "./setup";
 
 const content = document.createElement("div");

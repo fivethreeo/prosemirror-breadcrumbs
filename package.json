@@ -4,7 +4,12 @@
   "description": "Breadcrumb navigation for ProseMirror editors",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "style"
+  ],
   "exports": {
+    "./style/breadcrumbs.css": "./style/breadcrumbs.css",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"

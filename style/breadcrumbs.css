@@ -1,0 +1,23 @@
+.ProseMirror-breadcrumb-container {
+  padding: 4px 8px;
+  font-size: 0.85em;
+  border-top: 1px solid #ddd;
+  color: #444;
+}
+
+.ProseMirror-breadcrumb-container > span {
+  margin-right: 4px;
+}
+
+.ProseMirror-breadcrumb-container > span:not(:empty) {
+  cursor: pointer;
+}
+
+.ProseMirror-breadcrumb-container > span.active {
+  text-decoration: underline;
+}
+
+.ProseMirror-breadcrumb-container > span.selected {
+  background-color: #dbeafe;
+  font-weight: bold;
+}
