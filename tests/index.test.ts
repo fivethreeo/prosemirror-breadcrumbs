@@ -144,9 +144,50 @@ describe("breadcrumbPlugin", () => {
 
     try {
       expect(
-        mount.querySelector(".ProseMirror-breadcrumb-container > span.mark")
-          ?.innerText,
+        (mount.querySelector(
+          ".ProseMirror-breadcrumb-container > span.mark",
+        ) as HTMLElement | null)?.innerText,
       ).toBe("strong");
+    } finally {
+      view.destroy();
+      mount.remove();
+    }
+  });
+
+  it("selects and highlights the marked text when its breadcrumb is clicked", () => {
+    const markedText = schema.text("nested", [schema.mark("strong")]);
+    const doc = schema.node("doc", null, [
+      schema.node("paragraph", null, [
+        schema.text("before "),
+        markedText,
+        schema.text(" after"),
+      ]),
+    ]);
+    const state = EditorState.create({
+      doc,
+      selection: TextSelection.create(doc, 10),
+      plugins: [breadcrumbPlugin({ showMarks: true })],
+    });
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const view = new EditorView(mount, { state });
+
+    try {
+      const markCrumb = mount.querySelector(
+        ".ProseMirror-breadcrumb-container > span.mark",
+      ) as HTMLElement;
+      markCrumb.click();
+
+      expect(view.state.selection).toBeInstanceOf(TextSelection);
+      expect(view.state.doc.textBetween(
+        view.state.selection.from,
+        view.state.selection.to,
+      )).toBe("nested");
+      const selectedMarkCrumb = mount.querySelector(
+        ".ProseMirror-breadcrumb-container > span.mark.selected",
+      );
+      expect(selectedMarkCrumb).not.toBeNull();
+      expect(selectedMarkCrumb?.getAttribute("aria-current")).toBe("location");
     } finally {
       view.destroy();
       mount.remove();

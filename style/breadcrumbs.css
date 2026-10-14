@@ -24,7 +24,7 @@
 
 .ProseMirror-breadcrumb-container > span.separator,
 .ProseMirror-breadcrumb-container > span.mark {
-  cursor: default;
+  cursor: pointer;
 }
 
 .ProseMirror-breadcrumb-container > span.mark {
