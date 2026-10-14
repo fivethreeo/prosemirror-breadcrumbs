@@ -72,6 +72,34 @@ describe("breadcrumbPlugin", () => {
     expect(breadcrumbPluginKey.getState(nextState)?.path[1].pos).toBe(10);
   });
 
+  it("includes and highlights a selected node in the breadcrumb path", () => {
+    const doc = nestedDocument();
+    const state = EditorState.create({
+      doc,
+      selection: NodeSelection.create(doc, 0),
+      plugins: [breadcrumbPlugin()],
+    });
+    const path = breadcrumbPluginKey.getState(state)?.path;
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const view = new EditorView(mount, { state });
+
+    try {
+      expect(path?.map(({ name }) => name)).toEqual(["Document", "blockquote"]);
+      expect(path?.[1].pos).toBe(0);
+
+      const selectedCrumb = mount.querySelector(".selected");
+      expect(selectedCrumb?.textContent).toBe("blockquote");
+      expect(selectedCrumb?.getAttribute("aria-current")).toBe("location");
+      expect((selectedCrumb as HTMLElement).style.backgroundColor).toBe(
+        "rgb(219, 234, 254)",
+      );
+    } finally {
+      view.destroy();
+      mount.remove();
+    }
+  });
+
   it("selects the node represented by a clicked breadcrumb", () => {
     const doc = nestedDocument();
     const state = EditorState.create({

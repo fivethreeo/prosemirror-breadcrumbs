@@ -59,6 +59,15 @@ class BreadcrumbDOMView {
 
       const crumb = document.createElement("span");
       crumb.innerText = step.name;
+      const isSelected =
+        view.state.selection instanceof NodeSelection &&
+        view.state.selection.from === step.pos;
+      crumb.classList.toggle("selected", isSelected);
+      if (isSelected) {
+        crumb.setAttribute("aria-current", "location");
+        crumb.style.backgroundColor = "#dbeafe";
+        crumb.style.fontWeight = "bold";
+      }
       crumb.onmouseover = () => {
         crumb.classList.add("active");
       };
@@ -125,6 +134,19 @@ function buildPathFromRoot(state: EditorState): BreadcrumbNode[] {
       pos: nodePos,
       start: $from.start(depth),
       end: $from.end(depth),
+      node,
+    });
+  }
+
+  if (state.selection instanceof NodeSelection) {
+    const { node, from } = state.selection;
+    const depth = state.selection.$from.depth + 1;
+    path.push({
+      name: node.type.name,
+      depth,
+      pos: from,
+      start: from + 1,
+      end: from + 1 + node.content.size,
       node,
     });
   }
