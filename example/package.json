@@ -3,13 +3,13 @@
   "version": "1.2.3",
   "description": "An example for how to set up a ProseMirror editor",
   "type": "module",
-  "main": "dist/index.cjs",
-  "module": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "src/index.ts",
+  "module": "src/index.ts",
+  "types": "src/index.ts",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts"
     },
     "./style/style.css": "./style/style.css"
   },
@@ -37,11 +37,5 @@
     "prosemirror-menu": "^1.0.0",
     "prosemirror-dropcursor": "^1.0.0",
     "prosemirror-gapcursor": "^1.0.0"
-  },
-  "devDependencies": {
-    "@prosemirror/buildhelper": "^0.1.5"
-  },
-  "scripts": {
-    "prepare": "pm-buildhelper src/index.ts"
   }
 }
