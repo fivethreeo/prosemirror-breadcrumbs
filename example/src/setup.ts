@@ -11,5 +11,8 @@ export const exampleSchema = new Schema({
 });
 
 export function exampleSrt(): Plugin[] {
-  return [...exampleSetup({ schema: exampleSchema }), breadcrumbPlugin()];
+  return [
+    ...exampleSetup({ schema: exampleSchema }),
+    breadcrumbPlugin({ showMarks: true }),
+  ];
 }

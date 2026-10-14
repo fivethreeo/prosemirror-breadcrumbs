@@ -54,3 +54,5 @@ From the repository root:
 - `npm test` runs the plugin tests.
 - `npm run typecheck` checks source and test TypeScript.
 - `npm run build` builds the package into `dist/`.
+
+Pass `{ showMarks: true }` to `breadcrumbPlugin` to show active marks as breadcrumbs.

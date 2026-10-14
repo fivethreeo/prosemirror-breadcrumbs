@@ -1,5 +1,11 @@
-import { EditorState, NodeSelection, Plugin, PluginKey } from "prosemirror-state";
-import { Node as ProseMirrorNode } from "prosemirror-model";
+import {
+  EditorState,
+  NodeSelection,
+  Plugin,
+  PluginKey,
+  TextSelection,
+} from "prosemirror-state";
+import { Mark, Node as ProseMirrorNode } from "prosemirror-model";
 import { EditorView } from "prosemirror-view";
 
 export interface BreadcrumbNode {
@@ -15,12 +21,18 @@ export interface BreadcrumbPluginState {
   path: BreadcrumbNode[];
 }
 
+export interface BreadcrumbPluginOptions {
+  showMarks?: boolean;
+}
+
 export const breadcrumbPluginKey = new PluginKey<BreadcrumbPluginState>("breadcrumbPlugin");
 
 class BreadcrumbDOMView {
   dom: HTMLDivElement;
+  private showMarks: boolean;
 
-  constructor(view: EditorView) {
+  constructor(view: EditorView, showMarks: boolean) {
+    this.showMarks = showMarks;
     this.dom = document.createElement("div");
     this.dom.className = "ProseMirror-breadcrumb-container";
     this.mount(view);
@@ -91,6 +103,42 @@ class BreadcrumbDOMView {
 
       this.dom.appendChild(crumb);
     });
+
+    if (this.showMarks) {
+      const marks = getBreadcrumbMarks(view.state);
+      marks.forEach((mark) => {
+        const separator = document.createElement("span");
+        separator.className = "separator";
+        separator.innerText = "›";
+        this.dom.appendChild(separator);
+
+        const markCrumb = document.createElement("span");
+        markCrumb.className = "mark";
+        markCrumb.innerText = mark.type.name;
+        const markRange = findMarkRange(view.state, mark);
+        const isSelected =
+          markRange !== null &&
+          view.state.selection instanceof TextSelection &&
+          view.state.selection.from === markRange.from &&
+          view.state.selection.to === markRange.to;
+        markCrumb.classList.toggle("selected", isSelected);
+        if (isSelected) {
+          markCrumb.setAttribute("aria-current", "location");
+        }
+        markCrumb.onclick = () => {
+          if (!markRange) return;
+
+          const selection = TextSelection.create(
+            view.state.doc,
+            markRange.from,
+            markRange.to,
+          );
+          view.dispatch(view.state.tr.setSelection(selection));
+          view.focus();
+        };
+        this.dom.appendChild(markCrumb);
+      });
+    }
   }
 
   destroy() {
@@ -98,7 +146,7 @@ class BreadcrumbDOMView {
   }
 }
 
-export function breadcrumbPlugin() {
+export function breadcrumbPlugin(options: BreadcrumbPluginOptions = {}) {
   return new Plugin<BreadcrumbPluginState>({
     key: breadcrumbPluginKey,
     state: {
@@ -113,9 +161,57 @@ export function breadcrumbPlugin() {
       },
     },
     view(editorView) {
-      return new BreadcrumbDOMView(editorView);
+      return new BreadcrumbDOMView(editorView, options.showMarks ?? false);
     },
   });
+}
+
+function getBreadcrumbMarks(state: EditorState): readonly Mark[] {
+  if (state.selection.empty) {
+    return state.storedMarks || state.selection.$from.marks();
+  }
+
+  const marks: Mark[] = [];
+  state.doc.nodesBetween(state.selection.from, state.selection.to, (node) => {
+    if (!node.isInline) return;
+
+    node.marks.forEach((mark) => {
+      if (!marks.some((existing) => existing.eq(mark))) {
+        marks.push(mark);
+      }
+    });
+  });
+  return marks;
+}
+
+function findMarkRange(
+  state: EditorState,
+  mark: Mark,
+): { from: number; to: number } | null {
+  const { $from } = state.selection;
+  const parent = $from.parent;
+  if (!parent.isTextblock) return null;
+
+  const ranges: { from: number; to: number }[] = [];
+  parent.forEach((node, offset) => {
+    if (!node.isInline || !mark.isInSet(node.marks)) return;
+
+    const from = $from.start() + offset;
+    const to = from + node.nodeSize;
+    const previous = ranges[ranges.length - 1];
+    if (previous?.to === from) {
+      previous.to = to;
+    } else {
+      ranges.push({ from, to });
+    }
+  });
+
+  const pos = $from.pos;
+  return (
+    ranges.find(({ from, to }) => from <= pos && pos < to) ??
+    ranges.find(({ from, to }) => from < pos && pos <= to) ??
+    null
+  );
 }
 
 function buildPathFromRoot(state: EditorState): BreadcrumbNode[] {
