@@ -25,6 +25,10 @@ const state = EditorState.create({
 
 The plugin renders a breadcrumb for the document and each ancestor shared by the selection's endpoints. Clicking a node breadcrumb selects that node with a ProseMirror `NodeSelection`; the document-root breadcrumb is not selectable. If the selection is already a `NodeSelection`, the selected node is also represented in the path.
 
+## Bundlers and ProseMirror module instances
+
+The editor and this plugin must use the same instances of `prosemirror-model`, `prosemirror-state`, and `prosemirror-view`. If a bundler includes duplicate copies, `instanceof` checks such as the plugin's `NodeSelection` check can fail. Configure your package manager or bundler to deduplicate these modules; the [example's Rsbuild config](./example/rsbuild.config.ts) aliases them to the example's copies.
+
 ## Options
 
 Pass `{ showMarks: true }` to `breadcrumbPlugin` to show active marks as breadcrumbs. Mark breadcrumbs are disabled by default.
