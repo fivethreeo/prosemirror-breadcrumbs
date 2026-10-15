@@ -36,6 +36,7 @@ class BreadcrumbDOMView {
     this.showMarks = showMarks;
     this.dom = document.createElement("div");
     this.dom.className = "ProseMirror-breadcrumb-container";
+    this.dom.onmousedown = (event) => event.preventDefault();
     this.mount(view);
     this.update(view, view.state);
   }
@@ -86,7 +87,6 @@ class BreadcrumbDOMView {
       crumb.onmouseout = () => {
         crumb.classList.remove("active");
       };
-      crumb.onmousedown = (event) => event.preventDefault();
       crumb.onclick = () => {
         const { tr, doc } = view.state;
         if (step.depth === 0) {
@@ -144,7 +144,6 @@ class BreadcrumbDOMView {
         if (isSelected) {
           markCrumb.setAttribute("aria-current", "location");
         }
-        markCrumb.onmousedown = (event) => event.preventDefault();
         markCrumb.onclick = () => {
           if (!markRange) return;
 
