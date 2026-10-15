@@ -5,7 +5,6 @@ import {
   PluginKey,
   TextSelection,
 } from "prosemirror-state";
-import { selectParentNode } from "prosemirror-commands";
 import { Mark, Node as ProseMirrorNode } from "prosemirror-model";
 import { EditorView } from "prosemirror-view";
 
@@ -95,22 +94,7 @@ class BreadcrumbDOMView {
         }
 
         try {
-          const child = step.node.firstChild;
-          const childState =
-            child && NodeSelection.isSelectable(child)
-              ? view.state.apply(
-                  tr.setSelection(NodeSelection.create(doc, step.start)),
-                )
-              : null;
-          const selectedParent =
-            childState &&
-            selectParentNode(childState, (transaction) =>
-              view.dispatch(transaction),
-            );
-
-          if (!selectedParent) {
-            view.dispatch(tr.setSelection(NodeSelection.create(doc, step.pos)));
-          }
+          view.dispatch(tr.setSelection(NodeSelection.create(doc, step.pos)));
           const dom = view.nodeDOM(step.pos);
           if (dom instanceof HTMLElement) {
             dom.scrollIntoView({ block: "nearest", inline: "nearest" });
