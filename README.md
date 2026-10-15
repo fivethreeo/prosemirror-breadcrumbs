@@ -55,6 +55,16 @@ Each `BreadcrumbNode` contains:
 
 The [`example/`](./example) directory contains a runnable ProseMirror editor with the breadcrumb plugin.
 
+To run it locally:
+
+```sh
+cd example
+npm ci
+npm run dev
+```
+
+The development server opens the example in your browser. To build the example for production, run `npm run build` from the `example/` directory.
+
 ## Development
 
 From the repository root:
