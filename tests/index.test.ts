@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 
 import { NodeSelection, TextSelection, EditorState } from "prosemirror-state";
+import { selectParentNode } from "prosemirror-commands";
 import { Schema } from "prosemirror-model";
 import { EditorView } from "prosemirror-view";
 import { describe, expect, it } from "vitest";
@@ -223,6 +224,58 @@ describe("breadcrumbPlugin", () => {
     } finally {
       view.destroy();
       mount.remove();
+    }
+  });
+});
+
+describe("breadcrumb selection vs selectParentNode", () => {
+  it("selects the same nodes and produces the same DOM", () => {
+    const mount = document.createElement("div");
+    document.body.appendChild(mount);
+    const doc = nestedDocument();
+    const view = new EditorView(mount, {
+      state: EditorState.create({
+        doc,
+        selection: TextSelection.create(doc, 4),
+        plugins: [breadcrumbPlugin()],
+      }),
+    });
+    const refMount = document.createElement("div");
+    document.body.appendChild(refMount);
+    const refView = new EditorView(refMount, {
+      state: EditorState.create({
+        doc,
+        selection: TextSelection.create(doc, 4),
+      }),
+    });
+
+    try {
+      const crumbs = () =>
+        Array.from(
+          view.dom.parentElement!.querySelectorAll<HTMLElement>(
+            ".ProseMirror-breadcrumb-container > span:not(.separator)",
+          ),
+        ).filter((el) => el.innerText !== "›");
+
+      // Walk up from the paragraph: paragraph, then blockquote
+      for (const name of ["paragraph", "blockquote"]) {
+        selectParentNode(refView.state, refView.dispatch);
+        crumbs().find((el) => el.innerText === name)!.click();
+
+        const a = view.state.selection;
+        const b = refView.state.selection;
+        expect(a).toBeInstanceOf(NodeSelection);
+        expect(b).toBeInstanceOf(NodeSelection);
+        expect(a.from).toBe(b.from);
+        expect(a.to).toBe(b.to);
+        expect((a as NodeSelection).node.eq((b as NodeSelection).node)).toBe(true);
+        expect(view.dom.innerHTML).toBe(refView.dom.innerHTML);
+      }
+    } finally {
+      view.destroy();
+      refView.destroy();
+      mount.remove();
+      refMount.remove();
     }
   });
 });
