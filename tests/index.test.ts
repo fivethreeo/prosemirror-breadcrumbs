@@ -112,11 +112,21 @@ describe("breadcrumbPlugin", () => {
     const view = new EditorView(mount, { state });
 
     try {
-      const crumbs = mount.querySelector(".ProseMirror-breadcrumb-container");
+      const crumbs = mount.querySelector<HTMLDivElement>(
+        ".ProseMirror-breadcrumb-container",
+      );
       const blockquoteCrumb = crumbs?.children[2] as HTMLElement | undefined;
 
       expect(blockquoteCrumb).toBeDefined();
       expect(blockquoteCrumb?.innerText).toBe("blockquote");
+      expect(crumbs?.onmousedown).toBeTypeOf("function");
+      expect(blockquoteCrumb?.onmousedown).toBeNull();
+      const mouseDown = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      });
+      blockquoteCrumb?.dispatchEvent(mouseDown);
+      expect(mouseDown.defaultPrevented).toBe(true);
       (blockquoteCrumb as HTMLElement).click();
 
       expect(view.state.selection).toBeInstanceOf(NodeSelection);
