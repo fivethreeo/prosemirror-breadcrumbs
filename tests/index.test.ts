@@ -126,8 +126,11 @@ describe("breadcrumbPlugin", () => {
       (blockquoteCrumb as HTMLElement).click();
 
       expect(view.state.selection).toBeInstanceOf(NodeSelection);
+      expect(view.state.selection.node).toBe(doc.firstChild);
       expect(view.state.selection.from).toBe(0);
-      expect(view.state.selection.to).toBe(10);
+      expect(view.state.selection.to).toBe(
+        view.state.selection.from + doc.firstChild!.nodeSize,
+      );
     } finally {
       view.destroy();
       mount.remove();
