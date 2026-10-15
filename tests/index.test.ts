@@ -117,6 +117,12 @@ describe("breadcrumbPlugin", () => {
 
       expect(blockquoteCrumb).toBeDefined();
       expect(blockquoteCrumb?.innerText).toBe("blockquote");
+      const mouseDown = new MouseEvent("mousedown", {
+        bubbles: true,
+        cancelable: true,
+      });
+      (blockquoteCrumb as HTMLElement).dispatchEvent(mouseDown);
+      expect(mouseDown.defaultPrevented).toBe(true);
       (blockquoteCrumb as HTMLElement).click();
 
       expect(view.state.selection).toBeInstanceOf(NodeSelection);
