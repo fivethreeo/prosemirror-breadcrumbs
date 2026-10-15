@@ -85,6 +85,7 @@ class BreadcrumbDOMView {
       crumb.onmouseout = () => {
         crumb.classList.remove("active");
       };
+      crumb.onmousedown = (event) => event.preventDefault();
       crumb.onclick = () => {
         const { tr, doc } = view.state;
         if (step.depth === 0) {
@@ -95,7 +96,6 @@ class BreadcrumbDOMView {
         try {
           const selection = NodeSelection.create(doc, step.pos);
           view.dispatch(tr.setSelection(selection));
-          view.focus();
           const dom = view.nodeDOM(step.pos);
           if (dom instanceof HTMLElement) {
             dom.scrollIntoView({ block: "nearest", inline: "nearest" });
@@ -129,6 +129,7 @@ class BreadcrumbDOMView {
         if (isSelected) {
           markCrumb.setAttribute("aria-current", "location");
         }
+        markCrumb.onmousedown = (event) => event.preventDefault();
         markCrumb.onclick = () => {
           if (!markRange) return;
 
@@ -138,7 +139,6 @@ class BreadcrumbDOMView {
             markRange.to,
           );
           view.dispatch(view.state.tr.setSelection(selection));
-          view.focus();
         };
         this.dom.appendChild(markCrumb);
       });
